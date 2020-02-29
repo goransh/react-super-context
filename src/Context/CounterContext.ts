@@ -1,15 +1,19 @@
-import {Dispatch, useState} from "react";
-import {useSuperContext} from "./SuperContext";
+import {useState} from "react";
+import {createSuperContext} from "./SuperContext";
 
 export interface CounterContext {
     count: number;
-    setCount: Dispatch<number>;
+    increment: () => void;
+    decrement: () => void;
 }
 
 export function Counter(): CounterContext {
     const [count, setCount] = useState(0);
 
-    return {count, setCount};
+    const increment = () => setCount(count + 1);
+    const decrement = () => setCount(Math.max(0, count - 1));
+
+    return {count, increment, decrement};
 }
 
-export const useCounter = () => useSuperContext(Counter);
+export const useCounter = createSuperContext(Counter);

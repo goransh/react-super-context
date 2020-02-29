@@ -2,9 +2,12 @@ import React from 'react';
 import {useCounter} from "./Context/CounterContext";
 
 export const CounterButton = () => {
-    const {count, setCount} = useCounter();
+    const {increment, decrement} = useCounter();
 
     return (
-        <button onClick={() => setCount(count + 1)}>+1</button>
+        <>
+            <button onClick={decrement}>-</button>
+            <button onClick={increment}>+</button>
+        </>
     );
 };
