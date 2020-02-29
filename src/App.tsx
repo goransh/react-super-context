@@ -9,11 +9,11 @@ import {Logging} from "./Context/LoggingContext";
 function App() {
     return (
         <div>
-            <SuperContext subContexts={{
+            <SuperContext subContexts={[
                 Counter,
                 EvenOrOdd,
                 Logging
-            }}>
+            ]}>
                 <CountDisplay/>
                 <CounterButton/>
             </SuperContext>
