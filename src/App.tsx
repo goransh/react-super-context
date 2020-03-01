@@ -9,7 +9,7 @@ import {Logging} from "./Context/LoggingContext";
 function App() {
     return (
         <div>
-            <SuperContext subContexts={[
+            <SuperContext contexts={[
                 Counter,
                 EvenOrOdd,
                 Logging

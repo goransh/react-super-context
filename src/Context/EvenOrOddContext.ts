@@ -7,6 +7,5 @@ export const EvenOrOdd = (state: ContextMap) => {
     return count % 2 === 0 ? "even" : "odd";
 };
 
-
 export const useEvenOrOdd = createSuperContext<string>(EvenOrOdd);
 
