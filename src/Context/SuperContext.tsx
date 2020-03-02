@@ -1,33 +1,27 @@
-import React, {createContext, PropsWithChildren, useContext} from "react";
+import React, {Context, createContext, createElement, PropsWithChildren, useContext} from "react";
 
-export type SubContext<T = any> = (state?: any) => T;
-export type ContextMap = Map<SubContext, any>;
-export type SuperContextProps = PropsWithChildren<{ contexts: SubContext[] }>;
-
-const Super = createContext<ContextMap>(new Map<SubContext, any>());
-
-export const SuperContext = ({contexts, children}: SuperContextProps) => {
-    const map = new Map<SubContext, any>();
-
-    for (let context of contexts) {
-        map.set(context, context(map));
-    }
-    return <Super.Provider value={map}>{children}</Super.Provider>;
-};
-
-function useSuperContext<T = any>(context: SubContext<T>, state?: ContextMap): T {
-    const contextMap = useContext(Super);
-    // check 'has' first because 'get' can return undefined and still be valid
-    if (contextMap.has(context)) return contextMap.get(context) as T;
-
-    if (!state?.has(context)) {
-        throw Error(`Unknown context '${context.name}'. Did you add it to the subContexts list? ` +
-            'If this is called from another SuperContext make sure you\'re passing the state argument.')
-    }
-
-    return state!.get(context) as T;
+interface SubContext<T = any> {
+    context: Context<T>;
+    hook: () => T
 }
 
-export function createSuperContext<T>(context: SubContext<T>) {
-    return (state?: ContextMap) => useSuperContext(context, state);
+export type SuperContextProps = PropsWithChildren<{ contexts: SubContext[] }>;
+
+export const SuperContext = ({contexts, children}: SuperContextProps) =>
+    <SubContextProvider contexts={contexts} index={0}>{children}</SubContextProvider>;
+
+const SubContextProvider = ({contexts, index, children}: SuperContextProps & { index: number }) => {
+    const value = contexts[index].hook();
+
+    return createElement(
+        contexts[index].context.Provider,
+        {value},
+        index + 1 < contexts.length ?
+            <SubContextProvider contexts={contexts} index={index + 1}>{children}</SubContextProvider> : children);
+};
+
+export function createSuperContext<T>(hook: () => T): [SubContext<T>, () => T] {
+    const context = createContext<T>({} as T);
+    const useContextHook = () => useContext<T>(context);
+    return [{context, hook}, useContextHook];
 }

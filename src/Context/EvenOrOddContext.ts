@@ -1,11 +1,9 @@
-import {ContextMap, createSuperContext} from "./SuperContext";
+import {createSuperContext} from "./SuperContext";
 import {useCounter} from "./CounterContext";
 
-export const EvenOrOdd = (state: ContextMap) => {
-    const {count} = useCounter(state);
+export const [evenOrOdd, useEvenOrOdd] = createSuperContext(() => {
+    const {count} = useCounter();
 
     return count % 2 === 0 ? "even" : "odd";
-};
-
-export const useEvenOrOdd = createSuperContext<string>(EvenOrOdd);
+});
 
