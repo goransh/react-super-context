@@ -2,19 +2,19 @@ import React from 'react';
 import {SuperContext} from "./Context/SuperContext";
 import {CountDisplay} from "./CountDisplay";
 import {CounterButton} from "./CounterButton";
-import {EvenOrOdd} from "./Context/EvenOrOddContext";
-import {Counter} from "./Context/CounterContext";
-import {Logging} from "./Context/LoggingContext";
+import {evenOrOdd} from "./Context/EvenOrOddContext";
+import {counter} from "./Context/CounterContext";
+import {logging} from "./Context/LoggingContext";
 
 const App = () => (
     <div>
         <SuperContext contexts={[
-            Counter,
-            EvenOrOdd,
-            Logging
+            counter,
+            evenOrOdd,
+            logging
         ]}>
-            <CountDisplay/>
-            <CounterButton/>
+                <CountDisplay/>
+                <CounterButton/>
         </SuperContext>
     </div>
 );
