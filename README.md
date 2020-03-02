@@ -1,6 +1,6 @@
 # react-super-context
 
-A wrapper around the React Context API.
+A wrapper around the React Context API. Makes it easy to create and consume contexts without having to write a lot of boilerplate.
 
 ## Examples
 
@@ -42,7 +42,34 @@ export const CounterButton = () => {
 };
 ```
 
-### 2. TypeScript
+### 2. Use multiple contexts
+
+**1**. Add a second context that uses `useCounter`.
+
+```javascript
+// EvenOrOddContext.ts
+export const [evenOrOdd, useEvenOrOdd] = createSuperContext(() => {
+    const {count} = useCounter();
+    return count % 2 === 0 ? "even" : "odd";
+});
+```
+
+**2**. Remember to add it to the contexts lists. The order of the contexts matters.
+```javascript
+// App.jsx
+const App = () => (
+    <div>
+        <SuperContext contexts={[counter, evenOrOdd]}>
+            <CountDisplay/>
+            <CounterButton/>
+        </SuperContext>
+    </div>
+);
+```
+
+`evenOrOdd` depends on `counter` so if they were given the other way around (`contexts={[evenOrOdd, counter]}`), then `useEvenOrOdd` wouldn't work correctly.
+
+### 3. TypeScript
 
 **1**. Type given explicitly in `createSuperContext` call.
 ```typescript
