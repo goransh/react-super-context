@@ -15,8 +15,9 @@ const SubContextProvider = ({contexts, index, children}: SuperContextProps & { i
 
     return createElement(
         contexts[index].context.Provider,
-        {value}, index + 1 < contexts.length ?
-        <SubContextProvider contexts={contexts} index={index + 1}>{children}</SubContextProvider> : children);
+        {value},
+        index + 1 < contexts.length ?
+            <SubContextProvider contexts={contexts} index={index + 1}>{children}</SubContextProvider> : children);
 };
 
 export function createSuperContext<T>(hook: () => T): [SubContext<T>, () => T] {
