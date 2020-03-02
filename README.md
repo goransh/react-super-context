@@ -6,7 +6,7 @@ A wrapper around the React Context API. Makes it easy to create and consume cont
 
 ### 1. Simple example
 
-**1**. Use the `createSuperContext`-function to create your context. It takes a function that returns the state and returns a context object as well as a hook to access the state. 
+**1**. Use the `createSuperContext` function to create your context. It takes a function that returns the state and returns a context object as well as a hook to access the state. 
 ```javascript
 // CounterContext.js
 export const [counter, useCounter] = createSuperContext(() => {
@@ -69,7 +69,33 @@ const App = () => (
 
 `evenOrOdd` depends on `counter` so if they were given the other way around (`contexts={[evenOrOdd, counter]}`), then `useEvenOrOdd` wouldn't work correctly.
 
-### 3. TypeScript
+**3**. Consume the new context.
+
+```javascript
+// CountDisplay.jsx
+export const CountDisplay = () => {
+    const {count} = useCounter();
+    const evenOrOdd = useEvenOrOdd();
+
+    return <div>{count} ({evenOrOdd})</div>;
+};
+```
+
+### 3. Use hooks as you normally would
+```javascript
+export const [logging] = createSuperContext(() => {
+    const {count} = useCounter();
+    const evenOrOdd = useEvenOrOdd();
+
+    useEffect(() => {
+        console.log(`The current count is ${count} which is ${evenOrOdd}`);
+    }, [count, evenOrOdd]);
+});
+```
+
+Remember to always add your context objects to the `SuperContext` component.
+
+### 4. TypeScript
 
 **1**. Type given explicitly in `createSuperContext` call.
 ```typescript
@@ -95,7 +121,6 @@ export const [counter, useCounter] = createSuperContext<CounterContext>(() => {
 // EvenOrOddContext.ts
 export const [evenOrOdd, useEvenOrOdd] = createSuperContext(() => {
     const {count} = useCounter();
-
     return count % 2 === 0 ? "even" : "odd";
 });
 ```
