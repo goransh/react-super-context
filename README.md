@@ -1,44 +1,114 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# react-super-context
 
-## Available Scripts
+A wrapper around the React Context API.
 
-In the project directory, you can run:
+## Examples
 
-### `npm start`
+### 1. Simple example
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+**1**. Define your context and pass it to the `createSuperContext`-function.
+```typescript
+// CounterContext.ts
+export const Counter = () => {
+    const [count, setCount] = useState(0);
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+    return {count, setCount};
+};
 
-### `npm test`
+export const useCounter = createSuperContext(Counter);
+```
+**2**. Add the `SuperContext` in your app and pass it your contexts. 
+```typescript jsx
+// App.tsx
+const App = () => (
+    <div>
+        <SuperContext contexts={[Counter]}>
+            <CountDisplay/>
+            <CounterButton/>
+        </SuperContext>
+    </div>
+);
+```
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**3**. Consume the context in your components.
+```typescript jsx
+// CountDisplay.tsx
+export const CountDisplay = () => {
+    const {count} = useCounter();
+    return <div>{count}</div>;
+};
 
-### `npm run build`
+// CounterButton.tsx 
+export const CounterButton = () => {
+    const {count, setCount} = useCounter();
+    return <button onClick={() => setCount(count + 1)}>+1</button>;
+};
+```
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 2. Use a context from another context
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+The super context's state isn't updated until all its sub-contexts have been evaluated so if you want to share values between sub-contexts, you must pass the state argument to the hook. You are then able to access values of any of the previous sub-contexts in SuperContext's list.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```typescript jsx
+// EvenOrOddContext.ts
+export const EvenOrOdd = (state: any) => {
+    const {count} = useCounter(state);
+    return count % 2 === 0 ? "even" : "odd";
+};
 
-### `npm run eject`
+export const useEvenOrOdd = createSuperContext<string>(EvenOrOdd);
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+// App.tsx
+const App = () => (
+    <div>
+        <SuperContext contexts={[Counter, EvenOrOdd]}> {/* The order is important */}
+            <CountDisplay/>
+            <CounterButton/>
+        </SuperContext>
+    </div>
+);
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 3. TypeScript
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+**1**. Type inferred from context function's return type.
+```typescript jsx
+// CounterContext.ts
+interface CounterContext {
+    count: number;
+    increment: () => void;
+    decrement: () => void;
+}
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+export function Counter(): CounterContext {
+    const [count, setCount] = useState(0);
 
-## Learn More
+    const increment = () => setCount(count + 1);
+    const decrement = () => setCount(Math.max(0, count - 1));
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    return {count, increment, decrement};
+}
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+export const useCounter = createSuperContext(Counter);
+```
+
+**2**. Type given explicitly in `createSuperContext` call.
+```typescript
+// EvenOrOddContext.ts
+export const EvenOrOdd = (state: any) => {
+    const {count} = useCounter(state);
+    return count % 2 === 0 ? "even" : "odd";
+};
+
+export const useEvenOrOdd = createSuperContext<string>(EvenOrOdd);
+```
+
+**3**. Types inferred when consuming the context
+```typescript jsx
+export const CountDisplay = () => {
+    const {count} = useCounter(); // inferred type: CounterContext
+    const evenOrOdd = useEvenOrOdd(); // inferred type: string
+
+    return <div>{count} ({evenOrOdd})</div>;
+};
+```

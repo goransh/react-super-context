@@ -6,19 +6,17 @@ import {EvenOrOdd} from "./Context/EvenOrOddContext";
 import {Counter} from "./Context/CounterContext";
 import {Logging} from "./Context/LoggingContext";
 
-function App() {
-    return (
-        <div>
-            <SuperContext contexts={[
-                Counter,
-                EvenOrOdd,
-                Logging
-            ]}>
-                <CountDisplay/>
-                <CounterButton/>
-            </SuperContext>
-        </div>
-    );
-}
+const App = () => (
+    <div>
+        <SuperContext contexts={[
+            Counter,
+            EvenOrOdd,
+            Logging
+        ]}>
+            <CountDisplay/>
+            <CounterButton/>
+        </SuperContext>
+    </div>
+);
 
 export default App;

@@ -12,7 +12,7 @@ export const SuperContext = ({contexts, children}: SuperContextProps) => {
     for (let context of contexts) {
         map.set(context, context(map));
     }
-    return (<Super.Provider value={map}>{children}</Super.Provider>)
+    return <Super.Provider value={map}>{children}</Super.Provider>;
 };
 
 function useSuperContext<T = any>(context: SubContext<T>, state?: ContextMap): T {

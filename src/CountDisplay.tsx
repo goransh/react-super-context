@@ -6,9 +6,5 @@ export const CountDisplay = () => {
     const {count} = useCounter();
     const evenOrOdd = useEvenOrOdd();
 
-    return (
-        <div>
-            {count} ({evenOrOdd})
-        </div>
-    );
+    return <div>{count} ({evenOrOdd})</div>;
 };
