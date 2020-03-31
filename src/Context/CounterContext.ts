@@ -7,8 +7,8 @@ export interface CounterContext {
     decrement: () => void;
 }
 
-export const [counter, useCounter] = createSuperContext<CounterContext>(() => {
-    const [count, setCount] = useState(0);
+export const [counter, useCounter] = createSuperContext<CounterContext, { initial: number}>(({initial}) => {
+    const [count, setCount] = useState(initial);
 
     const increment = () => setCount(count + 1);
     const decrement = () => setCount(Math.max(0, count - 1));

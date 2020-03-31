@@ -47,7 +47,7 @@ export const CounterButton = () => {
 **1**. Add a second context that uses `useCounter`.
 
 ```javascript
-// EvenOrOddContext.ts
+// EvenOrOddContext.js
 export const [evenOrOdd, useEvenOrOdd] = createSuperContext(() => {
     const {count} = useCounter();
     return count % 2 === 0 ? "even" : "odd";
@@ -95,7 +95,33 @@ export const [logging] = createSuperContext(() => {
 
 Remember to always add your context objects to the `SuperContext` component.
 
-### 4. TypeScript
+### 4. Passing props
+
+**1**. Create a super context with the desired props.
+
+```javascript
+// CounterContext.js
+export const [counter, useCounter] = createSuperContext(({initial}) => {
+    const [count, setCount] = useState(initial);
+    return {count, setCount};
+});
+```
+
+**2**. `counter` is a function that you can pass the props to.
+
+```javascript
+// App.jsx
+const App = () => (
+    <div>
+        <SuperContext contexts={[counter({initial: 10})]}>
+            <CountDisplay/>
+            <CounterButton/>
+        </SuperContext>
+    </div>
+);
+```
+
+### 5. TypeScript
 
 **1**. Type given explicitly in `createSuperContext` call.
 ```typescript
@@ -134,3 +160,25 @@ export const CountDisplay = () => {
     return <div>{count} ({evenOrOdd})</div>;
 };
 ```
+
+### 6. Using props with Typescript
+
+You can either define the type of the context and props in the generic type arguments
+```typescript
+export const [counter, useCounter] = createSuperContext<CounterContext, {initial: number}>(({initial}) => {
+    const [count, setCount] = useState(initial);
+    return {count, setCount};
+});
+```
+
+or in the parameter and return types
+
+```typescript
+export const [counter, useCounter] = createSuperContext(({initial}: {initial: number}) => {
+    const [count, setCount] = useState(initial);
+    return <CounterContext>{count, setCount};
+    // or return {count, setCount} as CounterContext;
+});
+```
+
+Doing a combination of the two approaches above will prevent Typescript from inferring the prop types.

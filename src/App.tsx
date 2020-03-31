@@ -9,7 +9,7 @@ import {logging} from "./Context/LoggingContext";
 const App = () => (
     <div>
         <SuperContext contexts={[
-            counter,
+            counter({initial: 11}),
             evenOrOdd,
             logging
         ]}>
