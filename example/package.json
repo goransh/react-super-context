@@ -4,7 +4,7 @@
     "eslint": "6.6.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-super-context": "file:..",
+    "react-super-context": "file:../react-super-context-0.1.0.tgz",
     "typescript": "^3.9.7"
   },
   "devDependencies": {

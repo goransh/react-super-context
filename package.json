@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "files": [
-    "lib/*"
+    "dist/*"
   ],
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "peerDependencies": {
     "react": ">=16.8",
     "react-dom": ">=16.8"
