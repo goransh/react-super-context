@@ -6,8 +6,10 @@ import {evenOrOdd} from "./Context/EvenOrOddContext";
 import {counter} from "./Context/CounterContext";
 import {logging} from "./Context/LoggingContext";
 
+
 const App = () => (
     <div>
+
         <SuperContext contexts={[
             counter({initial: 11}),
             evenOrOdd,
