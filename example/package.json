@@ -1,11 +1,11 @@
 {
   "private": true,
   "dependencies": {
+    "eslint": "6.6.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-super-context": "file:../",
-    "typescript": "^3.9.7",
-    "eslint": "6.6.0"
+    "react-super-context": "file:..",
+    "typescript": "^3.9.7"
   },
   "devDependencies": {
     "@types/node": "^14.0.27",
