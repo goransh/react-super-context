@@ -1,7 +1,7 @@
 import {useEffect} from "react";
 import {useCounter} from "./CounterContext";
 import {useEvenOrOdd} from "./EvenOrOddContext";
-import {createSuperContext} from "./SuperContext";
+import {createSuperContext} from "react-super-context";
 
 export const [logging] = createSuperContext(() => {
     const {count} = useCounter();

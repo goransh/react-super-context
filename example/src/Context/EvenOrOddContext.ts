@@ -1,4 +1,4 @@
-import {createSuperContext} from "./SuperContext";
+import {createSuperContext} from "react-super-context";
 import {useCounter} from "./CounterContext";
 
 export const [evenOrOdd, useEvenOrOdd] = createSuperContext(() => {

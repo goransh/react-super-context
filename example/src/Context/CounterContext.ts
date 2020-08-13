@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {createSuperContext} from "./SuperContext";
+import {createSuperContext} from "react-super-context";
 
 export interface CounterContext {
     count: number;

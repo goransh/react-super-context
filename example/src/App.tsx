@@ -1,5 +1,5 @@
 import React from 'react';
-import {SuperContext} from "./Context/SuperContext";
+import {SuperContext} from "react-super-context";
 import {CountDisplay} from "./CountDisplay";
 import {CounterButton} from "./CounterButton";
 import {evenOrOdd} from "./Context/EvenOrOddContext";
@@ -9,7 +9,6 @@ import {logging} from "./Context/LoggingContext";
 
 const App = () => (
     <div>
-
         <SuperContext contexts={[
             counter({initial: 11}),
             evenOrOdd,
