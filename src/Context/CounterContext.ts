@@ -14,4 +14,4 @@ export const [counter, useCounter] = createSuperContext<CounterContext, { initia
     const decrement = () => setCount(Math.max(0, count - 1));
 
     return {count, increment, decrement};
-});
+}, "Counter");

@@ -25,8 +25,9 @@ const SuperContextProvider = ({contexts, index, children}: SuperContextProps & {
 };
 
 // could maybe benefit from partial type argument inference: https://github.com/microsoft/TypeScript/issues/26242
-export function createSuperContext<T, P = any>(hook: (props: P) => T): [(props: P) => SuperContext<P, T>, () => T] {
+export function createSuperContext<T, P = any>(hook: (props: P) => T, displayName?: string): [(props: P) => SuperContext<P, T>, () => T] {
     const context = createContext<T>({} as T);
+    context.displayName = displayName ?? "SuperContext";
     const useContextHook = () => useContext<T>(context);
     return [(props: P) => ({context, hook, props}), useContextHook];
 }
