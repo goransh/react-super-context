@@ -1,6 +1,5 @@
 import React from "react";
-import { useCounter } from "./Context/CounterContext";
-import { useEvenOrOdd } from "./Context/EvenOrOddContext";
+import { useCounter, useEvenOrOdd } from "../Contexts";
 
 export const CountDisplay = () => {
   const { count } = useCounter();

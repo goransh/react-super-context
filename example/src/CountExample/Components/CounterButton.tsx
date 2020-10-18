@@ -1,5 +1,5 @@
 import React from "react";
-import { useCounter } from "./Context/CounterContext";
+import { useCounter } from "../Contexts";
 
 export const CounterButton = () => {
   const { increment, decrement } = useCounter();

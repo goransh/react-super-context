@@ -1,17 +1,14 @@
 import React from "react";
-import { SuperContext } from "react-super-context";
-import { CountDisplay } from "./CountDisplay";
-import { CounterButton } from "./CounterButton";
-import { evenOrOdd } from "./Context/EvenOrOddContext";
-import { counter } from "./Context/CounterContext";
-import { logging } from "./Context/LoggingContext";
+import CountExample from "./CountExample/CountExample";
+import TodoApiExample from "./TodoApiExample/TodoApiExample";
 
 const App = () => (
   <div>
-    <SuperContext contexts={[counter({ initial: 11 }), evenOrOdd, logging]}>
-      <CountDisplay />
-      <CounterButton />
-    </SuperContext>
+    <h1>SuperContext examples</h1>
+    <h2>Counter</h2>
+    <CountExample />
+    <h2>Todo API</h2>
+    <TodoApiExample />
   </div>
 );
 

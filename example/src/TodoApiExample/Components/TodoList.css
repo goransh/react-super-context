@@ -1,0 +1,11 @@
+.todoListItem:not(.removing) {
+    cursor: pointer;
+}
+
+.todoListItem:not(.removing):hover {
+    text-decoration: line-through;
+}
+
+.todoListItem.removing {
+    color: grey;
+}

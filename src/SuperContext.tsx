@@ -86,7 +86,7 @@ export function createSuperContext<T, P = any>(
 ): [(props: P) => SuperContextType<P, T>, () => T] {
   const defaultValue = {} as T;
   const context = createContext<T>(defaultValue);
-  const useContextHook = () => {
+  const useSuperContext = () => {
     const value = useContext<T>(context);
     if (value === defaultValue) {
       const forName = options?.displayName ? `(for ${options.displayName}) ` : "";
@@ -96,5 +96,5 @@ export function createSuperContext<T, P = any>(
     }
     return value;
   };
-  return [(props: P) => ({ context, factory, props, options }), useContextHook];
+  return [(props: P) => ({ context, factory, props, options }), useSuperContext];
 }
