@@ -1,0 +1,28 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+trim_trailing_whitespace = false
+insert_final_newline = false
+indent_style = space
+indent_size = 4
+tab_width = 4
+max_line_length = 120
+
+[*.{js,jsx,ts,tsx}]
+tab_width = 2
+indent_size = 2
+max_line_length = 100
+
+[{.babelrc, .eslintrc, .stylelintrc, bowerrc, jest.config}]
+indent_size = 2
+
+[*.{har,inputactions,jsb2,jsb3,json}]
+indent_size = 2
+
+[*.proto]
+indent_size = 2
+
+[*.js.map]
+indent_size = 2
