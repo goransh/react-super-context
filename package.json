@@ -1,11 +1,14 @@
 {
   "name": "react-super-context",
   "version": "0.1.0",
-  "private": true,
+  "repository": {
+    "url": "https://github.com/goransh/react-super-context"
+  },
   "files": [
     "dist/*"
   ],
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "peerDependencies": {
     "react": ">=16.8",
     "react-dom": ">=16.8"
