@@ -1,39 +1,62 @@
-import React, { Context, createContext, PropsWithChildren, useContext } from "react";
+import React, { Context, createContext, PropsWithChildren, useContext, useMemo } from "react";
 
 interface SuperContextType<P = any, T = any> {
   context: Context<T>;
-  hook: (props: P) => T;
+  factory: (props: P) => T;
+  memoize?: boolean;
   props: P;
+}
+
+export interface CreateSuperContextOptions {
+  displayName: string;
+  memoize: boolean;
 }
 
 export type SuperContextProps = PropsWithChildren<{
   contexts: (SuperContextType | ((props?: any) => SuperContextType))[];
+  defaultOptions?: Partial<CreateSuperContextOptions>;
 }>;
 
-export const SuperContext = ({ contexts, children }: SuperContextProps): React.ReactElement =>
+export const SuperContext = ({
+  contexts,
+  defaultOptions,
+  children,
+}: SuperContextProps): React.ReactElement =>
   contexts.length === 0 ? (
     <>{children}</>
   ) : (
-    <SuperContextProvider contexts={contexts} index={0}>
+    <SuperContextProvider contexts={contexts} defaultOptions={defaultOptions} index={0}>
       {children}
     </SuperContextProvider>
   );
 
 const SuperContextProvider = ({
   contexts,
+  defaultOptions,
   index,
   children,
 }: SuperContextProps & { index: number }) => {
   const superContext = contexts[index];
   if (!superContext) throw new Error("SuperContext was null/undefined");
 
-  const { context, hook, props }: SuperContextType =
+  const { context, factory, props, memoize }: SuperContextType =
     typeof superContext === "function" ? superContext() : superContext;
 
   const nextIndex = index + 1;
 
+  let value = factory(props);
+  const memoizeOrDefault = memoize ?? defaultOptions?.memoize ?? false;
+  const deps = memoizeOrDefault
+    ? typeof value === "object"
+      ? Object.values(value)
+      : value instanceof Array
+      ? value
+      : [value]
+    : [value];
+  value = useMemo(() => value, deps);
+
   return (
-    <context.Provider value={hook(props)}>
+    <context.Provider value={value}>
       {nextIndex < contexts.length ? (
         <SuperContextProvider contexts={contexts} index={nextIndex}>
           {children}
@@ -48,10 +71,10 @@ const SuperContextProvider = ({
 // could maybe benefit from partial type argument inference: https://github.com/microsoft/TypeScript/issues/26242
 export function createSuperContext<T, P = any>(
   factory: (props: P) => T,
-  displayName?: string
+  { displayName, memoize }: Partial<CreateSuperContextOptions> = {}
 ): [(props: P) => SuperContextType<P, T>, () => T] {
   const context = createContext<T>({} as T);
   context.displayName = displayName ?? "SuperContext";
   const useContextHook = () => useContext<T>(context);
-  return [(props: P) => ({ context, hook: factory, props }), useContextHook];
+  return [(props: P) => ({ context, factory, memoize, props }), useContextHook];
 }

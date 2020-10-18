@@ -16,5 +16,7 @@ export const [counter, useCounter] = createSuperContext<CounterContext, { initia
 
     return { count, increment, decrement };
   },
-  "Counter"
+  {
+    displayName: "Counter",
+  }
 );
