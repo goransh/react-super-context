@@ -1,27 +1,21 @@
-import React, {
-  Context,
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useMemo,
-} from "react";
+import React, { Context, createContext, PropsWithChildren, useContext, useEffect } from "react";
+import { SuperContextInterceptor } from "./Interceptors";
 
-interface SuperContextType<P = any, T = any> {
+export interface SuperContextDefinition<P = any, T = any> {
   context: Context<T>;
   factory: (props: P) => T;
   props: P;
-  options?: Partial<CreateSuperContextOptions>;
+  options?: Partial<CreateSuperContextOptions<T>>;
 }
 
-export interface CreateSuperContextOptions {
+export interface CreateSuperContextOptions<T> {
   displayName: string;
-  memoize: boolean;
+  interceptors: SuperContextInterceptor<T>[];
 }
 
 export type SuperContextProps = PropsWithChildren<{
-  contexts: (SuperContextType | ((props?: any) => SuperContextType))[];
-  defaultOptions?: Partial<CreateSuperContextOptions>;
+  contexts: (SuperContextDefinition | ((props?: any) => SuperContextDefinition))[];
+  defaultOptions?: Partial<CreateSuperContextOptions<any>>;
 }>;
 
 export const SuperContext = ({
@@ -46,25 +40,23 @@ const SuperContextProvider = ({
   const superContext = contexts[index];
   if (!superContext) throw new Error("SuperContext was null/undefined");
 
-  const { context, factory, props, options }: SuperContextType =
+  const { context, factory, props, options }: SuperContextDefinition =
     typeof superContext === "function" ? superContext() : superContext;
 
-  const nextIndex = index + 1;
-
   let value = factory(props);
-  const memoizeOrDefault = options?.memoize ?? defaultOptions?.memoize ?? false;
-  const deps = memoizeOrDefault
-    ? typeof value === "object"
-      ? Object.values(value)
-      : value instanceof Array
-      ? value
-      : [value]
-    : [value];
-  value = useMemo(() => value, deps);
+
+  const interceptors = options?.interceptors ?? defaultOptions?.interceptors;
+  if (interceptors) {
+    for (const plugin of interceptors) {
+      value = plugin(value);
+    }
+  }
 
   useEffect(() => {
     context.displayName = options?.displayName ?? defaultOptions?.displayName ?? "SuperContext";
   }, [context, options?.displayName, defaultOptions?.displayName]);
+
+  const nextIndex = index + 1;
 
   return (
     <context.Provider value={value}>
@@ -82,8 +74,8 @@ const SuperContextProvider = ({
 // could maybe benefit from partial type argument inference: https://github.com/microsoft/TypeScript/issues/26242
 export function createSuperContext<T, P = any>(
   factory: (props: P) => T,
-  options: Partial<CreateSuperContextOptions> = {}
-): [(props: P) => SuperContextType<P, T>, () => T] {
+  options: Partial<CreateSuperContextOptions<T>> = {}
+): [(props: P) => SuperContextDefinition<P, T>, () => T] {
   const defaultValue = {} as T;
   const context = createContext<T>(defaultValue);
   const useSuperContext = () => {
