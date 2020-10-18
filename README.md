@@ -1,95 +1,178 @@
 # react-super-context
 
-A wrapper around the React Context API. Makes it easy to create and consume contexts without having to write a lot of boilerplate.
+A tiny wrapper library around the React Context API that reduces the amount of boilerplate code required to create and consume contexts.
+
+**Warning: This project is in an experimental state. APIs may change at any time.**
+
+## Features
+
+* Create contexts with no boilerplate
+* No more nested context providers
+* Throws an error when consuming a context that has no provider instead of failing silently
+* Built with TypeScript
+* Small bundle size
+
+## Before and After
+
+### Before
+
+```typescript jsx
+// when using TypeScript, you must define an interface for the context's value to get proper type hints
+interface CounterContextModel {
+  count: number;
+  increment: () => void;
+  decrement: () => void;
+}
+
+// createContext expects a default value that is used if there are no providers for the context
+const CounterContext = createContext<CounterContextModel>({
+  count: 0,
+  increment: () => {},
+  decrement: () => {},
+});
+
+// we export a provider component that is responsible for the context's states 
+export const CounterContextProvider = ({ children }: PropsWithChildren<{}>) => {
+  const [count, setCount] = useState(0);
+  const increment = () => setCount(count + 1);
+  const decrement = () => setCount(Math.max(0, count - 1));
+
+  return (
+    <CounterContext.Provider value={{ count, increment, decrement }}>
+      {children}
+    </CounterContext.Provider>
+  );
+};
+
+// we also export a hook that can be used to consume the context in our components
+export const useCounter = () => useContext(CounterContext);
+```
+
+### After
+```typescript jsx
+// createSuperContext returns a custom provider and a hook for consumption
+const [counterContext, useCounter] = createSuperContext(() => {
+  // the state logic is the same as before
+  const [count, setCount] = useState(0);
+  const increment = () => setCount(count + 1);
+  const decrement = () => setCount(Math.max(0, count - 1));
+
+  // we now simply have to return the context's value
+  // when using TypeScript, the types are inferred and the useCounter hook will have proper type hints
+  return { count, increment, decrement };
+});
+
+export { counterContext, useCounter };
+```
+
+### Before
+```typescript jsx
+const App = () => {
+  return (
+    <CounterContextProvider>
+      <MySecondContextProvider>
+        <MyThirdContextProvider>
+            <div>Your app with consumers comes here</div>
+        </MyThirdContextProvider>
+      </MySecondContextProvider>
+    </CounterContextProvider>
+  );
+};
+```
+
+### After
+```typescript jsx
+const App = () => (
+  <SuperContext contexts={[counterContext, mySecondContext, myThirdContext]}>
+    <div>Your app with consumers comes here</div>
+  </SuperContext>
+);
+```
 
 ## Examples
 
 ### 1. Simple example
 
-**1**. Use the `createSuperContext` function to create your context. It takes a function that returns the state and returns a context object as well as a hook to access the state. 
+**1**. Use the `createSuperContext` function to create your context. It takes a factory function that returns the context's value and returns a context object as well as a hook to consume the state. 
 ```javascript
-// CounterContext.js
-export const [counter, useCounter] = createSuperContext(() => {
+// CounterContext.ts
+export const [counterContext, useCounter] = createSuperContext(() => {
   const [count, setCount] = useState(0);
   return {count, setCount};
 });
 ```
-**2**. Add the `SuperContext` in your app and pass it the context (`counter`) created by the `createSuperContext` call. 
-```javascript
-// App.jsx
+**2**. To create a provider for the context, add the `SuperContext` component in your app and pass it the `counterContext` created by the `createSuperContext` call. 
+```typescript jsx
+// App.tsx
 const App = () => (
-    <div>
-        <SuperContext contexts={[counter]}>
-            <CountDisplay/>
-            <CounterButton/>
-        </SuperContext>
-    </div>
+  <SuperContext contexts={[counterContext]}>
+    <CountDisplay/>
+    <CounterButton/>
+  </SuperContext>
 );
 ```
 
-**3**. Consume the context in your components.
-```javascript
-// CountDisplay.jsx
-export const CountDisplay = () => {
-    const {count} = useCounter();
-    return <div>{count}</div>;
+**3**. Consume the context in your components using the `useCounter` hook.
+```typescript jsx
+// CountDisplay.tsx
+const CountDisplay = () => {
+  const { count } = useCounter();
+  return <div>{count}</div>;
 };
 
-// CounterButton.jsx 
-export const CounterButton = () => {
-    const {count, setCount} = useCounter();
-    return <button onClick={() => setCount(count + 1)}>+1</button>;
+// CounterButton.tsx 
+const CounterButton = () => {
+  const { count, setCount } = useCounter();
+  return <button onClick={() => setCount(count + 1)}>+1</button>;
 };
 ```
 
 ### 2. Use multiple contexts
 
-**1**. Add a second context that uses `useCounter`.
+**1**. Create a second context that uses `useCounter`.
 
 ```javascript
-// EvenOrOddContext.js
-export const [evenOrOdd, useEvenOrOdd] = createSuperContext(() => {
-    const {count} = useCounter();
-    return count % 2 === 0 ? "even" : "odd";
+// EvenOrOddContext.ts
+export const [evenOrOddContext, useEvenOrOdd] = createSuperContext(() => {
+  const { count } = useCounter();
+  return count % 2 === 0 ? "even" : "odd";
 });
 ```
 
 **2**. Remember to add it to the contexts lists. The order of the contexts matters.
-```javascript
-// App.jsx
+```typescript jsx
+// App.tsx
 const App = () => (
-    <div>
-        <SuperContext contexts={[counter, evenOrOdd]}>
-            <CountDisplay/>
-            <CounterButton/>
-        </SuperContext>
-    </div>
+  <SuperContext contexts={[counterContext, evenOrOddContext]}>
+    <CountDisplay/>
+    <CounterButton/>
+  </SuperContext>
 );
 ```
 
-`evenOrOdd` depends on `counter` so if they were given the other way around (`contexts={[evenOrOdd, counter]}`), then `useEvenOrOdd` wouldn't work correctly.
+`evenOrOddContext` depends on `counterContext` so if they were given the other way around (`contexts={[evenOrOddContext, counterContext]}`), then the `useCounter` call in `EvenOrOddContext.ts` will throw an error.
 
 **3**. Consume the new context.
 
-```javascript
-// CountDisplay.jsx
+```typescript jsx
+// CountDisplay.tsx
 export const CountDisplay = () => {
-    const {count} = useCounter();
-    const evenOrOdd = useEvenOrOdd();
+  const { count } = useCounter();
+  const evenOrOdd = useEvenOrOdd();
 
-    return <div>{count} ({evenOrOdd})</div>;
+  return <div>{count} ({evenOrOdd})</div>;
 };
 ```
 
 ### 3. Use hooks as you normally would
-```javascript
+```typescript jsx
 export const [logging] = createSuperContext(() => {
-    const {count} = useCounter();
-    const evenOrOdd = useEvenOrOdd();
+  const { count } = useCounter();
+  const evenOrOdd = useEvenOrOdd();
 
-    useEffect(() => {
-        console.log(`The current count is ${count} which is ${evenOrOdd}`);
-    }, [count, evenOrOdd]);
+  useEffect(() => {
+    console.log(`The current count is ${count} which is ${evenOrOdd}`);
+  }, [count, evenOrOdd]);
 });
 ```
 
@@ -99,86 +182,92 @@ Remember to always add your context objects to the `SuperContext` component.
 
 **1**. Create a super context with the desired props.
 
-```javascript
-// CounterContext.js
-export const [counter, useCounter] = createSuperContext(({initial}) => {
-    const [count, setCount] = useState(initial);
-    return {count, setCount};
+```typescript
+// CounterContext.ts
+interface CounterContextProps {
+  initial: number;
+}
+
+export const [counterContext, useCounter] = createSuperContext(({ initial }: CounterContextProps) => {
+  const [count, setCount] = useState(initial);
+  return { count, setCount };
 });
 ```
 
 **2**. `counter` is a function that you can pass the props to.
 
 ```javascript
-// App.jsx
+// App.tsx
 const App = () => (
-    <div>
-        <SuperContext contexts={[counter({initial: 10})]}>
-            <CountDisplay/>
-            <CounterButton/>
-        </SuperContext>
-    </div>
+  <SuperContext contexts={[counter({ initial: 10 })]}>
+    <CountDisplay/>
+    <CounterButton/>
+  </SuperContext>
 );
 ```
 
 ### 5. TypeScript
 
+In all the examples above, TypeScript is able to infer the types of both the context's value (the value returned by the factory function and by the generated hook) and the contexts' props. 
+
+```typescript jsx
+const CountDisplay = () => {
+  const { count } = useCounter(); // inferred type: { count: number, increment: () => void, decrement: () => void }
+  const evenOrOdd = useEvenOrOdd(); // inferred type: "even" | "odd"
+
+  return <div>{count} ({evenOrOdd})</div>;
+};
+```
+
+However, you can also define types explicitly:
+
 **1**. Type given explicitly in `createSuperContext` call.
 ```typescript
 // CounterContext.ts
-export interface CounterContext {
+interface CounterContext {
     count: number;
     increment: () => void;
     decrement: () => void;
 }
 
-export const [counter, useCounter] = createSuperContext<CounterContext>(() => {
-    const [count, setCount] = useState(0);
+const [counter, useCounter] = createSuperContext<CounterContext>(() => {
+  const [count, setCount] = useState(0);
+  const increment = () => setCount(count + 1);
+  const decrement = () => setCount(Math.max(0, count - 1));
 
-    const increment = () => setCount(count + 1);
-    const decrement = () => setCount(Math.max(0, count - 1));
-
-    return {count, increment, decrement};
+  return { count, increment, decrement };
 });
 ```
 
-**2**. Type inferred from context function's return type.
-```typescript
-// EvenOrOddContext.ts
-export const [evenOrOdd, useEvenOrOdd] = createSuperContext(() => {
-    const {count} = useCounter();
-    return count % 2 === 0 ? "even" : "odd";
-});
-```
-
-**3**. Types inferred when consuming the context
+**2**. Type inferred when consuming the context.
 ```typescript jsx
-export const CountDisplay = () => {
-    const {count} = useCounter(); // inferred type: CounterContext
-    const evenOrOdd = useEvenOrOdd(); // inferred type: "even" | "odd"
-
-    return <div>{count} ({evenOrOdd})</div>;
+const CountDisplay = () => {
+  const { count } = useCounter(); // inferred type: CounterContext
+  return <div>{count}</div>;
 };
 ```
 
 ### 6. Using props with Typescript
 
-You can either define the type of the context and props in the generic type arguments
+The simplest approach is to define the prop type in the argument for the factory function.
+
 ```typescript
-export const [counter, useCounter] = createSuperContext<CounterContext, {initial: number}>(({initial}) => {
-    const [count, setCount] = useState(initial);
-    return {count, setCount};
+interface CounterContextProps {
+  initial: number;
+}
+
+export const [counterContext, useCounter] = createSuperContext(({ initial }: CounterContextProps) => {
+  const [count, setCount] = useState(initial);
+  return { count, setCount };
 });
 ```
 
-or in the parameter and return types
-
+If you have defined the context's value type explicitly, you must pass the prop type as the second generic argument (at least [until TypeScript gets support for partial type argument inference](https://github.com/microsoft/TypeScript/issues/26242)).
 ```typescript
-export const [counter, useCounter] = createSuperContext(({initial}: {initial: number}) => {
-    const [count, setCount] = useState(initial);
-    return <CounterContext>{count, setCount};
-    // or return {count, setCount} as CounterContext;
+const [counter, useCounter] = createSuperContext<CounterContext, CounterContextProps>(({initial}) => {
+  const [count, setCount] = useState(initial);
+  return { count, setCount };
 });
 ```
 
-Doing a combination of the two approaches above will prevent Typescript from inferring the prop types.
+[See full examples here.](https://github.com/goransh/react-super-context/tree/master/example/src)

@@ -22,7 +22,8 @@
     "@typescript-eslint/no-object-literal-type-assertion": "off",
     "@typescript-eslint/no-parameter-properties": "off",
     "@typescript-eslint/explicit-member-accessibility": "off",
-    "@typescript-eslint/no-empty-function": "off"
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/ban-types": "off"
   },
   "parser": "@typescript-eslint/parser"
 }
