@@ -84,7 +84,17 @@ export function createSuperContext<T, P = any>(
   factory: (props: P) => T,
   options: Partial<CreateSuperContextOptions> = {}
 ): [(props: P) => SuperContextType<P, T>, () => T] {
-  const context = createContext<T>({} as T);
-  const useContextHook = () => useContext<T>(context);
+  const defaultValue = {} as T;
+  const context = createContext<T>(defaultValue);
+  const useContextHook = () => {
+    const value = useContext<T>(context);
+    if (value === defaultValue) {
+      const forName = options?.displayName ? `(for ${options.displayName}) ` : "";
+      throw new Error(
+        `Super context hook ${forName}was called, but the context was not provided. Make sure to include the context to a SuperContext.`
+      );
+    }
+    return value;
+  };
   return [(props: P) => ({ context, factory, props, options }), useContextHook];
 }
