@@ -1,10 +1,17 @@
-import React, { Context, createContext, PropsWithChildren, useContext, useMemo } from "react";
+import React, {
+  Context,
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react";
 
 interface SuperContextType<P = any, T = any> {
   context: Context<T>;
   factory: (props: P) => T;
-  memoize?: boolean;
   props: P;
+  options?: Partial<CreateSuperContextOptions>;
 }
 
 export interface CreateSuperContextOptions {
@@ -39,13 +46,13 @@ const SuperContextProvider = ({
   const superContext = contexts[index];
   if (!superContext) throw new Error("SuperContext was null/undefined");
 
-  const { context, factory, props, memoize }: SuperContextType =
+  const { context, factory, props, options }: SuperContextType =
     typeof superContext === "function" ? superContext() : superContext;
 
   const nextIndex = index + 1;
 
   let value = factory(props);
-  const memoizeOrDefault = memoize ?? defaultOptions?.memoize ?? false;
+  const memoizeOrDefault = options?.memoize ?? defaultOptions?.memoize ?? false;
   const deps = memoizeOrDefault
     ? typeof value === "object"
       ? Object.values(value)
@@ -54,6 +61,10 @@ const SuperContextProvider = ({
       : [value]
     : [value];
   value = useMemo(() => value, deps);
+
+  useEffect(() => {
+    context.displayName = options?.displayName ?? defaultOptions?.displayName ?? "SuperContext";
+  }, [context, options?.displayName, defaultOptions?.displayName]);
 
   return (
     <context.Provider value={value}>
@@ -71,10 +82,9 @@ const SuperContextProvider = ({
 // could maybe benefit from partial type argument inference: https://github.com/microsoft/TypeScript/issues/26242
 export function createSuperContext<T, P = any>(
   factory: (props: P) => T,
-  { displayName, memoize }: Partial<CreateSuperContextOptions> = {}
+  options: Partial<CreateSuperContextOptions> = {}
 ): [(props: P) => SuperContextType<P, T>, () => T] {
   const context = createContext<T>({} as T);
-  context.displayName = displayName ?? "SuperContext";
   const useContextHook = () => useContext<T>(context);
-  return [(props: P) => ({ context, factory, memoize, props }), useContextHook];
+  return [(props: P) => ({ context, factory, props, options }), useContextHook];
 }

@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { createSuperContext } from "react-super-context";
 
-export interface CounterContext {
-  count: number;
-  increment: () => void;
-  decrement: () => void;
+interface CounterContextProps {
+  initial: number;
 }
 
-export const [counter, useCounter] = createSuperContext<CounterContext, { initial: number }>(
-  ({ initial }) => {
+export const [counter, useCounter] = createSuperContext(
+  ({ initial }: CounterContextProps) => {
     const [count, setCount] = useState(initial);
 
     const increment = () => setCount(count + 1);
