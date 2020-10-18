@@ -1,5 +1,8 @@
 {
   "name": "react-super-context",
+  "author": "Gøran Humlestøl",
+  "keywords": ["react", "context", "state", "super", "boilerplate"],
+  "license": "ISC",
   "version": "0.1.0",
   "repository": {
     "url": "https://github.com/goransh/react-super-context"
