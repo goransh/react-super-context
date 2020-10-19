@@ -12,6 +12,12 @@ A tiny wrapper library around the React Context API that reduces the amount of b
 * Built with TypeScript
 * Small bundle size
 
+## Installation
+
+```
+npm i react-super-context
+```
+
 ## Before and After
 
 ### Before
