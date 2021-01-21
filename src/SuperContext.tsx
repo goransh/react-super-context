@@ -29,8 +29,13 @@ export const SuperContext = ({
     </SubContext>
   );
 
+type SubContextRequiredOptions = Pick<
+  CreateSuperContextOptions<any>,
+  "interceptors" | "displayName"
+>;
+
 // library's default options, can be overridden
-const fallbackOptions: CreateSuperContextOptions<any> = {
+const fallbackOptions: SubContextRequiredOptions = {
   interceptors: [],
   displayName: "SuperContext",
 };
@@ -47,7 +52,7 @@ const SubContext = ({
   const { context, factory, props, options }: SuperContextDefinition =
     typeof superContext === "function" ? superContext() : superContext;
 
-  const { displayName, interceptors } = useMemo<CreateSuperContextOptions<any>>(
+  const { displayName, interceptors } = useMemo<SubContextRequiredOptions>(
     () => ({
       ...fallbackOptions, // library defaults
       ...defaultOptions, // defaults of the super context
