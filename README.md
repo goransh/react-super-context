@@ -102,10 +102,12 @@ const App = () => (
 **1**. Use the `createSuperContext` function to create your context. It takes a factory function that returns the context's value and returns a context object as well as a hook to consume the state. 
 ```javascript
 // CounterContext.ts
-export const [counterContext, useCounter] = createSuperContext(() => {
+const [counterContext, useCounter] = createSuperContext(() => {
   const [count, setCount] = useState(0);
   return {count, setCount};
 });
+
+export {counterContext, useCounter };
 ```
 **2**. To create a provider for the context, add the `SuperContext` component in your app and pass it the `counterContext` created by the `createSuperContext` call. 
 ```typescript jsx
@@ -139,10 +141,12 @@ const CounterButton = () => {
 
 ```javascript
 // EvenOrOddContext.ts
-export const [evenOrOddContext, useEvenOrOdd] = createSuperContext(() => {
+const [evenOrOddContext, useEvenOrOdd] = createSuperContext(() => {
   const { count } = useCounter();
   return count % 2 === 0 ? "even" : "odd";
 });
+
+export { evenOrOddContext, useEvenOrOdd };
 ```
 
 **2**. Remember to add it to the contexts lists. The order of the contexts matters.
@@ -172,7 +176,7 @@ export const CountDisplay = () => {
 
 ### 3. Use hooks as you normally would
 ```typescript jsx
-export const [logging] = createSuperContext(() => {
+const [logging] = createSuperContext(() => {
   const { count } = useCounter();
   const evenOrOdd = useEvenOrOdd();
 
@@ -180,6 +184,8 @@ export const [logging] = createSuperContext(() => {
     console.log(`The current count is ${count} which is ${evenOrOdd}`);
   }, [count, evenOrOdd]);
 });
+
+export default logging;
 ```
 
 Remember to always add your context objects to the `SuperContext` component.
@@ -194,10 +200,12 @@ interface CounterContextProps {
   initial: number;
 }
 
-export const [counterContext, useCounter] = createSuperContext(({ initial }: CounterContextProps) => {
+const [counterContext, useCounter] = createSuperContext(({ initial }: CounterContextProps) => {
   const [count, setCount] = useState(initial);
   return { count, setCount };
 });
+
+export {counterContext, useCounter };
 ```
 
 **2**. `counter` is a function that you can pass the props to.
@@ -262,7 +270,7 @@ interface CounterContextProps {
   initial: number;
 }
 
-export const [counterContext, useCounter] = createSuperContext(({ initial }: CounterContextProps) => {
+const [counterContext, useCounter] = createSuperContext(({ initial }: CounterContextProps) => {
   const [count, setCount] = useState(initial);
   return { count, setCount };
 });
@@ -275,5 +283,39 @@ const [counter, useCounter] = createSuperContext<CounterContext, CounterContextP
   return { count, setCount };
 });
 ```
+
+### 7. Options
+
+The `createSuperContext` function takes an optional object as the second argument, allowing you to specify a number of options.
+
+```typescript
+const [counterContext, useCounter] = createSuperContext(
+    () => {
+        const [count, setCount] = useState(0);
+        return { count, setCount };
+    },
+    {
+        displayName: "MyCounterContext",
+        testValue: { count: 0, setCount: () => {} },
+    }
+);
+```
+
+`displayName` will be the name of the context provider component in error messages. The `testValue` is the value returned by the `useCounter` hook in a test environment. The library will by default check if `NODE_ENV === "test"` to determine if it is in a test environment, but this can be overridden with the `testEnvironment` option.
+
+If you use many of the same options on all context provided by a `SuperContext`, you can use the `defaultOptions` prop to set defaults:
+
+```typescript jsx
+const App = () => (
+    <SuperContext
+        contexts={[counterContext, evenOrOddContext]}
+        defaultOptions={{displayName: "MyContext"}}
+    >...</SuperContext>
+);
+```
+
+In the example above, both the `counterContext` and the `evenOrOddContext` provider components will be displayed as "MyContext" in error messages.
+
+### More examples
 
 [See full examples here.](https://github.com/goransh/react-super-context/tree/master/example/src)

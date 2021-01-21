@@ -10,7 +10,7 @@ export interface SuperContextDefinition<P = any, T = any> {
 
 export interface CreateSuperContextOptions<T> {
   /**
-   * The context provider component's display name in the debugger.
+   * The context provider component's display name in error messages.
    */
   displayName: string;
   /**
