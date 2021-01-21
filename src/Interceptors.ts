@@ -17,6 +17,9 @@ export type SuperContextInterceptor<T> = (value: T) => T;
  *
  * Requires that the super context factory returns an object or array with a constant amount of values.
  *
+ * For this to even work, the values of the object/array must be wrapped in useMemo or useCallback
+ * or some other approach so that they do not change on every render.
+ *
  * If the object or array contains any functions, make sure to wrap them in useCallback.
  */
 export function memoInterceptor<T>(value: T) {
