@@ -1,7 +1,9 @@
 import { useMemo } from "react";
 
 /**
- * Experimental.
+ * @deprecated
+ *
+ * This feature is deprecated, see https://github.com/goransh/react-super-context/wiki/Interceptors-deprecated
  *
  * Intercept the value of a super context. Allows you to read or transform the value before it
  * is passed to the context provider. Triggers after the super context factory.
@@ -9,7 +11,9 @@ import { useMemo } from "react";
 export type SuperContextInterceptor<T> = (value: T) => T;
 
 /**
- * Experimental.
+ * @deprecated
+ *
+ * This feature is deprecated, see https://github.com/goransh/react-super-context/wiki/Interceptors-deprecated
  *
  * Reduce unnecessary re-renders by wrapping the context's value in a useMemo.
  * If the value is an object, the useMemo's dependencies will be all the values of the object.

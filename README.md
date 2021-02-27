@@ -2,8 +2,6 @@
 
 A tiny wrapper library around the React Context API that reduces the amount of boilerplate code required to create and consume contexts.
 
-**Warning: This project is in an experimental state. APIs may change at any time.**
-
 ## Features
 
 * Create contexts with no boilerplate

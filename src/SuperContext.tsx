@@ -67,6 +67,12 @@ const SubContext = ({
     for (const interceptor of interceptors) {
       value = interceptor(value);
     }
+
+    if (interceptors.length > 0) {
+      console.warn(
+        "react-super-context: Interceptors have been deprecated, see https://github.com/goransh/react-super-context/wiki/Interceptors-deprecated"
+      );
+    }
   }
 
   useEffect(() => {

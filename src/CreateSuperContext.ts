@@ -14,7 +14,11 @@ export interface CreateSuperContextOptions<T> {
    */
   displayName: string;
   /**
-   * Experimental. Interceptors that can intercept the context's value and read/modify it.
+   * @deprecated
+   *
+   * This feature is deprecated, see https://github.com/goransh/react-super-context/wiki/Interceptors-deprecated
+   *
+   * Interceptors that can intercept the context's value and read/modify it.
    */
   interceptors: SuperContextInterceptor<T>[];
   /**

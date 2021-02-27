@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createSuperContext, memoInterceptor } from "react-super-context";
+import { createSuperContext } from "react-super-context";
 
 interface CounterContextProps {
   initial: number;
@@ -15,8 +15,7 @@ const [counterContext, useCounter] = createSuperContext(
     return { count, increment, decrement };
   },
   {
-    displayName: "Counter",
-    interceptors: [memoInterceptor],
+    displayName: "CounterContext",
   }
 );
 

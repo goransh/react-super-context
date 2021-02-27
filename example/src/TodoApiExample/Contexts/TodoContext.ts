@@ -1,4 +1,4 @@
-import { createSuperContext, memoInterceptor } from "react-super-context";
+import { createSuperContext } from "react-super-context";
 import Client, { TodoItem } from "../ApiClient/TodoApiClient";
 import { useCallback, useEffect, useState } from "react";
 
@@ -38,7 +38,6 @@ const [todoContext, useTodos] = createSuperContext(
   },
   {
     displayName: "TodoContext",
-    interceptors: [memoInterceptor],
   }
 );
 
