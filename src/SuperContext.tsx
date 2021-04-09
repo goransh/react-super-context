@@ -5,7 +5,7 @@ export type SuperContextProps = PropsWithChildren<{
   /**
    * Contexts provided by the SuperContext.
    */
-  contexts: (SuperContextDefinition | ((props?: any) => SuperContextDefinition))[];
+  contexts: (SuperContextDefinition | (() => SuperContextDefinition))[];
   /**
    * Options to apply to all contexts provided by the SuperContext. Will be overwritten by any
    * context specific options.

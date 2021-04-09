@@ -33,6 +33,14 @@ export interface CreateSuperContextOptions<T> {
 }
 
 // could maybe benefit from partial type argument inference: https://github.com/microsoft/TypeScript/issues/26242
+export function createSuperContext<T>(
+  factory: () => T,
+  options?: Partial<CreateSuperContextOptions<T>>
+): [() => SuperContextDefinition<any, T>, () => T];
+export function createSuperContext<T, P = any>(
+  factory: (props: P) => T,
+  options?: Partial<CreateSuperContextOptions<T>>
+): [(props: P) => SuperContextDefinition<P, T>, () => T];
 export function createSuperContext<T, P = any>(
   factory: (props: P) => T,
   options: Partial<CreateSuperContextOptions<T>> = {}
