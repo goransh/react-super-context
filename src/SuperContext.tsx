@@ -29,14 +29,10 @@ export const SuperContext = ({
     </SubContext>
   );
 
-type SubContextRequiredOptions = Pick<
-  CreateSuperContextOptions<any>,
-  "interceptors" | "displayName"
->;
+type SubContextRequiredOptions = Pick<CreateSuperContextOptions<any>, "displayName">;
 
 // library's default options, can be overridden
 const fallbackOptions: SubContextRequiredOptions = {
-  interceptors: [],
   displayName: "SuperContext",
 };
 
@@ -52,7 +48,7 @@ const SubContext = ({
   const { context, factory, props, options }: SuperContextDefinition =
     typeof superContext === "function" ? superContext() : superContext;
 
-  const { displayName, interceptors } = useMemo<SubContextRequiredOptions>(
+  const { displayName } = useMemo<SubContextRequiredOptions>(
     () => ({
       ...fallbackOptions, // library defaults
       ...defaultOptions, // defaults of the super context
@@ -61,24 +57,11 @@ const SubContext = ({
     [defaultOptions, options]
   );
 
-  let value = factory(props);
-
-  if (interceptors) {
-    for (const interceptor of interceptors) {
-      value = interceptor(value);
-    }
-
-    if (interceptors.length > 0) {
-      console.warn(
-        "react-super-context: Interceptors have been deprecated, see https://github.com/goransh/react-super-context/wiki/Interceptors-deprecated"
-      );
-    }
-  }
-
   useEffect(() => {
     context.displayName = displayName;
   }, [displayName]);
 
+  const value = factory(props);
   const nextIndex = index + 1;
 
   return (

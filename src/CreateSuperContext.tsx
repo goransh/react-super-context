@@ -1,5 +1,4 @@
 import { Context, createContext, useContext } from "react";
-import { SuperContextInterceptor } from "./Interceptors";
 
 export interface SuperContextDefinition<P = any, T = any> {
   context: Context<T>;
@@ -8,19 +7,19 @@ export interface SuperContextDefinition<P = any, T = any> {
   options?: Partial<CreateSuperContextOptions<T>>;
 }
 
+export interface SuperContextWithProps<P = any, T = any> {
+  (props: P): SuperContextDefinition<P, T>;
+}
+
+export interface SuperContextWithoutProps<T = any> {
+  (): SuperContextDefinition<any, T>;
+}
+
 export interface CreateSuperContextOptions<T> {
   /**
    * The context provider component's display name in error messages.
    */
   displayName: string;
-  /**
-   * @deprecated
-   *
-   * This feature is deprecated, see https://github.com/goransh/react-super-context/wiki/Interceptors-deprecated
-   *
-   * Interceptors that can intercept the context's value and read/modify it.
-   */
-  interceptors: SuperContextInterceptor<T>[];
   /**
    * Value provided when consuming this context (calling the hook) in a test environment.
    * If not provided, will return an empty object.
@@ -36,15 +35,15 @@ export interface CreateSuperContextOptions<T> {
 export function createSuperContext<T>(
   factory: () => T,
   options?: Partial<CreateSuperContextOptions<T>>
-): [() => SuperContextDefinition<any, T>, () => T];
+): [context: SuperContextWithoutProps<T>, hook: () => T];
 export function createSuperContext<T, P = any>(
   factory: (props: P) => T,
   options?: Partial<CreateSuperContextOptions<T>>
-): [(props: P) => SuperContextDefinition<P, T>, () => T];
+): [context: SuperContextWithProps<P, T>, hook: () => T];
 export function createSuperContext<T, P = any>(
   factory: (props: P) => T,
   options: Partial<CreateSuperContextOptions<T>> = {}
-): [(props: P) => SuperContextDefinition<P, T>, () => T] {
+): [context: SuperContextWithProps<P, T> | SuperContextWithoutProps<T>, hook: () => T] {
   const defaultValue = {} as T;
   const context = createContext<T>(defaultValue);
   const useSuperContext = () => {
@@ -60,5 +59,7 @@ export function createSuperContext<T, P = any>(
     }
     return value;
   };
-  return [(props: P) => ({ context, factory, props, options }), useSuperContext];
+  const Context: SuperContextWithProps<P, T> = (props: P) => ({ context, factory, props, options });
+
+  return [Context, useSuperContext];
 }

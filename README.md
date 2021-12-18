@@ -1,6 +1,6 @@
 # react-super-context
 
-A tiny wrapper library around the React Context API that reduces the amount of boilerplate code required to create and consume contexts.
+A tiny wrapper library around the [React Context API](https://reactjs.org/docs/context.html) that removes a lot of boilerplate required to create and consume contexts.
 
 ## Features
 
@@ -55,7 +55,7 @@ export const useCounter = () => useContext(CounterContext);
 ### After
 ```typescript jsx
 // createSuperContext returns a custom provider and a hook for consumption
-const [counterContext, useCounter] = createSuperContext(() => {
+const [CounterContext, useCounter] = createSuperContext(() => {
   // the state logic is the same as before
   const [count, setCount] = useState(0);
   const increment = () => setCount(count + 1);
@@ -66,7 +66,7 @@ const [counterContext, useCounter] = createSuperContext(() => {
   return { count, increment, decrement };
 });
 
-export { counterContext, useCounter };
+export { CounterContext, useCounter };
 ```
 
 ### Before
@@ -87,7 +87,7 @@ const App = () => {
 ### After
 ```typescript jsx
 const App = () => (
-  <SuperContext contexts={[counterContext, mySecondContext, myThirdContext]}>
+  <SuperContext contexts={[CounterContext, MySecondContext, MyThirdContext]}>
     <div>Your app with consumers comes here</div>
   </SuperContext>
 );
@@ -100,18 +100,18 @@ const App = () => (
 **1**. Use the `createSuperContext` function to create your context. It takes a factory function that returns the context's value and returns a context object as well as a hook to consume the state. 
 ```javascript
 // CounterContext.ts
-const [counterContext, useCounter] = createSuperContext(() => {
+const [CounterContext, useCounter] = createSuperContext(() => {
   const [count, setCount] = useState(0);
   return {count, setCount};
 });
 
-export {counterContext, useCounter };
+export { CounterContext, useCounter };
 ```
-**2**. To create a provider for the context, add the `SuperContext` component in your app and pass it the `counterContext` created by the `createSuperContext` call. 
+**2**. To create a provider for the context, add the `SuperContext` component in your app and pass it the `CounterContext` created by the `createSuperContext` call. 
 ```typescript jsx
 // App.tsx
 const App = () => (
-  <SuperContext contexts={[counterContext]}>
+  <SuperContext contexts={[CounterContext]}>
     <CountDisplay/>
     <CounterButton/>
   </SuperContext>
@@ -139,26 +139,26 @@ const CounterButton = () => {
 
 ```javascript
 // EvenOrOddContext.ts
-const [evenOrOddContext, useEvenOrOdd] = createSuperContext(() => {
+const [EvenOrOddContext, useEvenOrOdd] = createSuperContext(() => {
   const { count } = useCounter();
   return count % 2 === 0 ? "even" : "odd";
 });
 
-export { evenOrOddContext, useEvenOrOdd };
+export { EvenOrOddContext, useEvenOrOdd };
 ```
 
 **2**. Remember to add it to the contexts lists. The order of the contexts matters.
 ```typescript jsx
 // App.tsx
 const App = () => (
-  <SuperContext contexts={[counterContext, evenOrOddContext]}>
+  <SuperContext contexts={[CounterContext, EvenOrOddContext]}>
     <CountDisplay/>
     <CounterButton/>
   </SuperContext>
 );
 ```
 
-`evenOrOddContext` depends on `counterContext` so if they were given the other way around (`contexts={[evenOrOddContext, counterContext]}`), then the `useCounter` call in `EvenOrOddContext.ts` will throw an error.
+`EvenOrOddContext` depends on `CounterContext` so if they were given the other way around (`contexts={[EvenOrOddContext, CounterContext]}`), then the `useCounter` call in `EvenOrOddContext.ts` will throw an error.
 
 **3**. Consume the new context.
 
@@ -174,7 +174,7 @@ export const CountDisplay = () => {
 
 ### 3. Use hooks as you normally would
 ```typescript jsx
-const [logging] = createSuperContext(() => {
+const [Logging] = createSuperContext(() => {
   const { count } = useCounter();
   const evenOrOdd = useEvenOrOdd();
 
@@ -183,7 +183,7 @@ const [logging] = createSuperContext(() => {
   }, [count, evenOrOdd]);
 });
 
-export default logging;
+export default Logging;
 ```
 
 Remember to always add your context objects to the `SuperContext` component.
@@ -198,20 +198,20 @@ interface CounterContextProps {
   initial: number;
 }
 
-const [counterContext, useCounter] = createSuperContext(({ initial }: CounterContextProps) => {
+const [CounterContext, useCounter] = createSuperContext(({ initial }: CounterContextProps) => {
   const [count, setCount] = useState(initial);
   return { count, setCount };
 });
 
-export {counterContext, useCounter };
+export { CounterContext, useCounter };
 ```
 
-**2**. `counter` is a function that you can pass the props to.
+**2**. `CounterContext` is a function that you can pass the props to.
 
 ```javascript
 // App.tsx
 const App = () => (
-  <SuperContext contexts={[counter({ initial: 10 })]}>
+  <SuperContext contexts={[CounterContext({ initial: 10 })]}>
     <CountDisplay/>
     <CounterButton/>
   </SuperContext>
@@ -236,13 +236,13 @@ However, you can also define types explicitly:
 **1**. Type given explicitly in `createSuperContext` call.
 ```typescript
 // CounterContext.ts
-interface CounterContext {
+interface CounterContextModel {
     count: number;
     increment: () => void;
     decrement: () => void;
 }
 
-const [counter, useCounter] = createSuperContext<CounterContext>(() => {
+const [CounterContext, useCounter] = createSuperContext<CounterContextModel>(() => {
   const [count, setCount] = useState(0);
   const increment = () => setCount(count + 1);
   const decrement = () => setCount(Math.max(0, count - 1));
@@ -268,7 +268,7 @@ interface CounterContextProps {
   initial: number;
 }
 
-const [counterContext, useCounter] = createSuperContext(({ initial }: CounterContextProps) => {
+const [CounterContext, useCounter] = createSuperContext(({ initial }: CounterContextProps) => {
   const [count, setCount] = useState(initial);
   return { count, setCount };
 });
@@ -276,7 +276,7 @@ const [counterContext, useCounter] = createSuperContext(({ initial }: CounterCon
 
 If you have defined the context's value type explicitly, you must pass the prop type as the second generic argument (at least [until TypeScript gets support for partial type argument inference](https://github.com/microsoft/TypeScript/issues/26242)).
 ```typescript
-const [counter, useCounter] = createSuperContext<CounterContext, CounterContextProps>(({initial}) => {
+const [CounterContext, useCounter] = createSuperContext<CounterContext, CounterContextProps>(({initial}) => {
   const [count, setCount] = useState(initial);
   return { count, setCount };
 });
@@ -287,7 +287,7 @@ const [counter, useCounter] = createSuperContext<CounterContext, CounterContextP
 The `createSuperContext` function takes an optional object as the second argument, allowing you to specify a number of options.
 
 ```typescript
-const [counterContext, useCounter] = createSuperContext(
+const [CounterContext, useCounter] = createSuperContext(
     () => {
         const [count, setCount] = useState(0);
         return { count, setCount };
@@ -306,14 +306,14 @@ If you use many of the same options on all context provided by a `SuperContext`,
 ```typescript jsx
 const App = () => (
     <SuperContext
-        contexts={[counterContext, evenOrOddContext]}
+        contexts={[CounterContext, EvenOrOddContext]}
         defaultOptions={{displayName: "MyContext"}}
     >...</SuperContext>
 );
 ```
 
-In the example above, both the `counterContext` and the `evenOrOddContext` provider components will be displayed as "MyContext" in error messages.
+In the example above, both the `CounterContext` and the `EvenOrOddContext` provider components will be displayed as "MyContext" in error messages.
 
 ### More examples
 
-[See full examples here.](https://github.com/goransh/react-super-context/tree/master/example/src)
+[See complete examples here.](https://github.com/goransh/react-super-context/tree/master/example/src)

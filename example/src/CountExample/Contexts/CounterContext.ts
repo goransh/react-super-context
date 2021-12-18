@@ -5,7 +5,7 @@ interface CounterContextProps {
   initial: number;
 }
 
-const [counterContext, useCounter] = createSuperContext(
+const [CounterContext, useCounter] = createSuperContext(
   ({ initial }: CounterContextProps) => {
     const [count, setCount] = useState(initial);
 
@@ -19,4 +19,4 @@ const [counterContext, useCounter] = createSuperContext(
   }
 );
 
-export { counterContext, useCounter };
+export { CounterContext, useCounter };

@@ -2,10 +2,10 @@ import React from "react";
 import { SuperContext } from "react-super-context";
 import { CountDisplay } from "./Components/CountDisplay";
 import { CounterButton } from "./Components/CounterButton";
-import { counterContext, evenOrOddContext, loggingContext } from "./Contexts";
+import { CounterContext, EvenOrOddContext, LoggingContext } from "./Contexts";
 
 const CountExample = () => (
-  <SuperContext contexts={[counterContext({ initial: 10 }), evenOrOddContext, loggingContext]}>
+  <SuperContext contexts={[CounterContext({ initial: 10 }), EvenOrOddContext, LoggingContext]}>
     <CountDisplay />
     <CounterButton />
   </SuperContext>
