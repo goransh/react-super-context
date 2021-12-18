@@ -3,7 +3,7 @@ import { useCounter } from "./CounterContext";
 import { useEvenOrOdd } from "./EvenOrOddContext";
 import { createSuperContext } from "react-super-context";
 
-const [loggingContext] = createSuperContext(() => {
+const [LoggingContext] = createSuperContext(() => {
   const { count } = useCounter();
   const evenOrOdd = useEvenOrOdd();
 
@@ -12,4 +12,4 @@ const [loggingContext] = createSuperContext(() => {
   }, [count, evenOrOdd]);
 });
 
-export { loggingContext };
+export { LoggingContext };

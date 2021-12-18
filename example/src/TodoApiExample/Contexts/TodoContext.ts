@@ -2,7 +2,7 @@ import { createSuperContext } from "react-super-context";
 import Client, { TodoItem } from "../ApiClient/TodoApiClient";
 import { useCallback, useEffect, useState } from "react";
 
-const [todoContext, useTodos] = createSuperContext(
+const [TodoContext, useTodos] = createSuperContext(
   () => {
     const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
 
@@ -41,4 +41,4 @@ const [todoContext, useTodos] = createSuperContext(
   }
 );
 
-export { todoContext, useTodos };
+export { TodoContext, useTodos };

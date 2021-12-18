@@ -2,7 +2,7 @@ import { createSuperContext } from "react-super-context";
 import { useMemo, useState } from "react";
 import { useTodos } from "./TodoContext";
 
-const [todoFilterContext, useFilteredTodos] = createSuperContext(() => {
+const [TodoFilterContext, useFilteredTodos] = createSuperContext(() => {
   const { todoItems } = useTodos();
 
   const [filter, setFilter] = useState("");
@@ -19,4 +19,4 @@ const [todoFilterContext, useFilteredTodos] = createSuperContext(() => {
   };
 });
 
-export { todoFilterContext, useFilteredTodos };
+export { TodoFilterContext, useFilteredTodos };
