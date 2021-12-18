@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.0
+_18 December 2021_
+
+* **Breaking change**: Removed the `interceptors` feature that was deprecated in version 0.2.1. [Read more about this here](https://github.com/goransh/react-super-context/wiki/Interceptors-deprecated).
+* Updated naming convention of the context objects/functions to use PascalCase (like a component) instead of camelCase in readme and examples
 
 ## 0.2.2
 _9 April 2021_
