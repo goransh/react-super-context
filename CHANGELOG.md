@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1
+_18 December 2021_
+
+* Fix publish error
+
 ## 1.0.0
 _18 December 2021_
 
