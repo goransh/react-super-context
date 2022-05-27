@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useMemo } from "react";
+import React, { PropsWithChildren } from "react";
 import { CreateSuperContextOptions, SuperContextDefinition } from "./CreateSuperContext";
 
 export type SuperContextProps = PropsWithChildren<{
@@ -47,19 +47,9 @@ const SubContext = ({
 
   const { context, factory, props, options }: SuperContextDefinition =
     typeof superContext === "function" ? superContext() : superContext;
-
-  const { displayName } = useMemo<SubContextRequiredOptions>(
-    () => ({
-      ...fallbackOptions, // library defaults
-      ...defaultOptions, // defaults of the super context
-      ...options, // options of the sub-context
-    }),
-    [defaultOptions, options]
-  );
-
-  useEffect(() => {
-    context.displayName = displayName;
-  }, [displayName]);
+  // Get displayName from (1) context options or (2) super context defaults or (3) library defaults
+  context.displayName =
+    options?.displayName ?? defaultOptions?.displayName ?? fallbackOptions.displayName;
 
   const value = factory(props);
   const nextIndex = index + 1;

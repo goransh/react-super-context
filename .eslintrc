@@ -2,8 +2,7 @@
   "extends": [
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
-    "prettier/@typescript-eslint",
-    "plugin:prettier/recommended"
+    "prettier/@typescript-eslint"
   ],
   "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
   "rules": {
@@ -24,6 +23,5 @@
     "@typescript-eslint/explicit-member-accessibility": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/ban-types": "off"
-  },
-  "parser": "@typescript-eslint/parser"
+  }
 }
