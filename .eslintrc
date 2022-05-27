@@ -1,27 +1,8 @@
 {
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
   "extends": [
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier/@typescript-eslint"
-  ],
-  "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
-  "rules": {
-    "prettier/prettier": [
-      "warn",
-      {
-        "printWidth": 100,
-        "useTabs": false,
-        "tabWidth": 2
-      }
-    ],
-    "@typescript-eslint/ban-ts-ignore": "off",
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-object-literal-type-assertion": "off",
-    "@typescript-eslint/no-parameter-properties": "off",
-    "@typescript-eslint/explicit-member-accessibility": "off",
-    "@typescript-eslint/no-empty-function": "off",
-    "@typescript-eslint/ban-types": "off"
-  }
+    "ghu"
+  ]
 }

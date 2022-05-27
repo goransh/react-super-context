@@ -1,4 +1,5 @@
 import React, { PropsWithChildren } from "react";
+
 import { CreateSuperContextOptions, SuperContextDefinition } from "./CreateSuperContext";
 
 export type SuperContextProps = PropsWithChildren<{
@@ -10,7 +11,7 @@ export type SuperContextProps = PropsWithChildren<{
    * Options to apply to all contexts provided by the SuperContext. Will be overwritten by any
    * context specific options.
    */
-  defaultOptions?: Partial<CreateSuperContextOptions<any>>;
+  defaultOptions?: Partial<CreateSuperContextOptions<unknown>>;
 }>;
 
 /**
@@ -29,7 +30,7 @@ export const SuperContext = ({
     </SubContext>
   );
 
-type SubContextRequiredOptions = Pick<CreateSuperContextOptions<any>, "displayName">;
+type SubContextRequiredOptions = Pick<CreateSuperContextOptions<unknown>, "displayName">;
 
 // library's default options, can be overridden
 const fallbackOptions: SubContextRequiredOptions = {
