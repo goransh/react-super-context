@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "baseUrl": "./src",
+    "outDir": "../dist",
+    "declaration": true,
+    "target": "es6",
     "lib": [
       "dom",
       "dom.iterable",
@@ -12,14 +15,16 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
+    "module": "CommonJS",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react",
-    "baseUrl": ".",
-    "paths": {
-      "react-super-context": ["../src"]
-    }
-  }
+    "removeComments": false
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "../node_modules", "example"
+  ]
 }

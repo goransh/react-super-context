@@ -1,4 +1,5 @@
-import React, { PropsWithChildren, useEffect, useMemo } from "react";
+import React, { PropsWithChildren } from "react";
+
 import { CreateSuperContextOptions, SuperContextDefinition } from "./CreateSuperContext";
 
 export type SuperContextProps = PropsWithChildren<{
@@ -10,7 +11,7 @@ export type SuperContextProps = PropsWithChildren<{
    * Options to apply to all contexts provided by the SuperContext. Will be overwritten by any
    * context specific options.
    */
-  defaultOptions?: Partial<CreateSuperContextOptions<any>>;
+  defaultOptions?: Partial<CreateSuperContextOptions<unknown>>;
 }>;
 
 /**
@@ -29,7 +30,7 @@ export const SuperContext = ({
     </SubContext>
   );
 
-type SubContextRequiredOptions = Pick<CreateSuperContextOptions<any>, "displayName">;
+type SubContextRequiredOptions = Pick<CreateSuperContextOptions<unknown>, "displayName">;
 
 // library's default options, can be overridden
 const fallbackOptions: SubContextRequiredOptions = {
@@ -47,19 +48,9 @@ const SubContext = ({
 
   const { context, factory, props, options }: SuperContextDefinition =
     typeof superContext === "function" ? superContext() : superContext;
-
-  const { displayName } = useMemo<SubContextRequiredOptions>(
-    () => ({
-      ...fallbackOptions, // library defaults
-      ...defaultOptions, // defaults of the super context
-      ...options, // options of the sub-context
-    }),
-    [defaultOptions, options]
-  );
-
-  useEffect(() => {
-    context.displayName = displayName;
-  }, [displayName]);
+  // Get displayName from (1) context options or (2) super context defaults or (3) library defaults
+  context.displayName =
+    options?.displayName ?? defaultOptions?.displayName ?? fallbackOptions.displayName;
 
   const value = factory(props);
   const nextIndex = index + 1;
