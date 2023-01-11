@@ -97,7 +97,7 @@ const App = () => (
 
 ### 1. Simple example
 
-**1**. Use the `createSuperContext` function to create your context. It takes a factory function that returns the context's value and returns a context object as well as a hook to consume the state. 
+**1**. Use the `createSuperContext` function to create your context. It takes a factory function that returns the context's value and returns a context object as well as a hook to consume the state.
 ```javascript
 // CounterContext.ts
 const [CounterContext, useCounter] = createSuperContext(() => {
@@ -107,7 +107,7 @@ const [CounterContext, useCounter] = createSuperContext(() => {
 
 export { CounterContext, useCounter };
 ```
-**2**. To create a provider for the context, add the `SuperContext` component in your app and pass it the `CounterContext` created by the `createSuperContext` call. 
+**2**. To create a provider for the context, add the `SuperContext` component in your app and pass it the `CounterContext` created by the `createSuperContext` call.
 ```typescript jsx
 // App.tsx
 const App = () => (
@@ -220,7 +220,7 @@ const App = () => (
 
 ### 5. TypeScript
 
-In all the examples above, TypeScript is able to infer the types of both the context's value (the value returned by the factory function and by the generated hook) and the contexts' props. 
+In all the examples above, TypeScript is able to infer the types of both the context's value (the value returned by the factory function and by the generated hook) and the contexts' props.
 
 ```typescript jsx
 const CountDisplay = () => {
@@ -316,4 +316,4 @@ In the example above, both the `CounterContext` and the `EvenOrOddContext` provi
 
 ### More examples
 
-[See complete examples here.](https://github.com/goransh/react-super-context/tree/master/example/src)
+[See more examples here.](examples/src)
