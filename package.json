@@ -1,43 +1,7 @@
 {
-  "name": "react-super-context",
-  "author": "Gøran Humlestøl",
-  "keywords": [
-    "react",
-    "context",
-    "state",
-    "super",
-    "boilerplate"
-  ],
-  "license": "MIT",
-  "version": "1.0.1",
-  "repository": {
-    "url": "https://github.com/goransh/react-super-context"
-  },
-  "files": [
-    "dist/*"
-  ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "peerDependencies": {
-    "react": ">=16.8",
-    "react-dom": ">=16.8"
-  },
-  "devDependencies": {
-    "@types/node": "^17.0.35",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.5",
-    "@typescript-eslint/eslint-plugin": "^5.26.0",
-    "@typescript-eslint/parser": "^5.26.0",
-    "eslint": "^8.16.0",
-    "eslint-config-ghu": "^0.3.0",
-    "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.6.2",
-    "typescript": "^4.7.2"
-  },
-  "scripts": {
-    "build": "tsc",
-    "prepublish": "tsc"
-  }
+  "private": true,
+  "workspaces": [
+    "package",
+    "examples"
+  ]
 }

@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "react-super-context": path.resolve(__dirname, "../src")
+      "react-super-context": path.resolve(__dirname, "../package/src")
     }
   }
 })
