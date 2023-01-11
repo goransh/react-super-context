@@ -3,5 +3,8 @@
   "workspaces": [
     "package",
     "examples"
-  ]
+  ],
+  "scripts": {
+    
+  }
 }
